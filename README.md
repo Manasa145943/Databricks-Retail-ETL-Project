@@ -29,24 +29,24 @@ source CSVs ──▶ BRONZE (raw, Delta) ──▶ SILVER (cleaned, deduped, ty
 1. Create this repo's files in Databricks Repos (or upload the notebooks).
 2. Generate the sample data (run anywhere with Python 3 — laptop or a Databricks notebook):
    ```bash
-   python data/generate_retail_data.py --orders 50000 --out ./source
+   python generate_retail_data.py --orders 50000 --out ./source
    ```
    This creates `retail_orders.csv` and `retail_customers.csv`.
 3. Upload the two CSVs to DBFS, e.g. `/tmp/retail_etl/source/` (Data → Upload, or `dbfs cp`).
 
 ## Run it
 
-**Option A — notebooks in order:** open `notebooks/01` → `02` → `03` → `04` and run each.
+**Option A — notebooks in order:** open `01` → `02` → `03` → `04` and run each.
 Each notebook takes widgets `base_path` (default `/tmp/retail_etl`) and `data_path`
 (default `/tmp/retail_etl/source`), so no code edits are needed.
 
 **Option B — Databricks Workflow (recommended):** import
-`workflows/retail_etl_job.json` via the Jobs API — it chains the four notebooks with
+`retail_etl_job.json` via the Jobs API — it chains the four notebooks with
 `depends_on`, passing the paths as parameters. The DQ notebook raises on critical
 failures, so the job surfaces bad data instead of silently loading it.
 
 ```bash
-databricks jobs create --json-file workflows/retail_etl_job.json
+databricks jobs create --json-file retail_etl_job.json
 ```
 
 ## Data-quality rules enforced
